@@ -57,9 +57,9 @@ function SQL-Query{
             $SqlConnection.dispose()
 
         }
-        $output | Add-Member -Type NoteProperty -Name RunDuration -Value (New-TimeSpan -Start $output.StartTime -End $output.EndTime)
+        #$output | Add-Member -Type NoteProperty -Name RunDuration -Value (New-TimeSpan -Start $output.StartTime -End $output.EndTime)
         $output | Add-Member -Type NoteProperty -Name Results -Value $Data
-        $output | Add-Member -Type NoteProperty -Name Error -Value $handler
+        #$output | Add-Member -Type NoteProperty -Name Error -Value $handler
     }
     Write-Progress -Id 0 -Activity 'Running SQL Query' -Status "Connecting to Server" -CurrentOperation $computer -PercentComplete ( 4/5 * 100)
     return $output

@@ -22,7 +22,10 @@ function SQL-Query{
             $SqlConnection = New-Object System.Data.SqlClient.SqlConnection
             #$SqlConnection.ConnectionString = "Server = $SQLServer; Database = $SQLDBName; 
             #User ID=sa; Password=FuBar4U#"
+            if([string]::IsNullOrEmpty($UserName)){$SqlConnection.ConnectionString = "Server=$Instance; Database=$Database;Trusted_Connection=True;"}
+            else{
             $SqlConnection.ConnectionString = "Server = $Instance; Database = $Database; User ID=$UserName; Password=$PWD"
+            }
             $SqlConnection.add_infoMessage($handler)
             $SQLConnection.FireInfoMessageEventOnUserErrors = $true
             $SQLConnection.Open()
@@ -31,7 +34,7 @@ function SQL-Query{
             throw
         }
         try{
-            Write-Progress -Id 0 -Activity 'Running SQL Query' -Status "Connecting to Server" -CurrentOperation $computer -PercentComplete ( 2/5 * 100)
+            #Write-Progress -Id 0 -Activity 'Running SQL Query' -Status "Connecting to Server" -CurrentOperation $computer -PercentComplete ( 2/5 * 100)
             $output | Add-Member -Type NoteProperty -Name SQL -Value $Query
             $SqlCmd = New-Object System.Data.SqlClient.SqlCommand
             $SqlCmd.CommandText = $Query
@@ -50,25 +53,21 @@ function SQL-Query{
 
     }
     Finally{
-    Write-Progress -Id 0 -Activity 'Running SQL Query' -Status "Connecting to Server" -CurrentOperation $computer -PercentComplete ( 3/5 * 100)
+    Write-Progress -Id 0 -Activity 'Exiting' -Status "Closing Connection" -CurrentOperation $computer -PercentComplete ( 3/5 * 100)
         if ($SqlConnection -and $SqlConnection.State -eq [System.Data.ConnectionState]::Open)
         {
             $SqlConnection.Close()
             $SqlConnection.dispose()
 
         }
-        #$output | Add-Member -Type NoteProperty -Name RunDuration -Value (New-TimeSpan -Start $output.StartTime -End $output.EndTime)
+        $output | Add-Member -Type NoteProperty -Name RunDuration -Value (New-TimeSpan -Start $output.StartTime -End $output.EndTime)
         $output | Add-Member -Type NoteProperty -Name Results -Value $Data
-        #$output | Add-Member -Type NoteProperty -Name Error -Value $handler
+        $output | Add-Member -Type NoteProperty -Name Error -Value $handler
     }
-    Write-Progress -Id 0 -Activity 'Running SQL Query' -Status "Connecting to Server" -CurrentOperation $computer -PercentComplete ( 4/5 * 100)
+    Write-Progress -Id 0 -Activity 'Exiting' -Status "Return Value" -CurrentOperation $computer -PercentComplete (100)
+    #$ProgressPreference = "SilentlyContinue"
     return $output
     
-    
-    
-    #Write-host $output | Format-List | Out-String
-    #Write-Host $Query
-    #return $Data
     
     
 }

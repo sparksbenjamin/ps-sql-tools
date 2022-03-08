@@ -21,7 +21,6 @@ function SQL-Query{
             $output | Add-Member -Type NoteProperty -Name StartTime -Value (Get-Date)
             $SqlConnection = New-Object System.Data.SqlClient.SqlConnection
             #$SqlConnection.ConnectionString = "Server = $SQLServer; Database = $SQLDBName; 
-            #User ID=sa; Password=FuBar4U#"
             if([string]::IsNullOrEmpty($UserName)){$SqlConnection.ConnectionString = "Server=$Instance; Database=$Database;Trusted_Connection=True;"}
             else{
             $SqlConnection.ConnectionString = "Server = $Instance; Database = $Database; User ID=$UserName; Password=$PWD"
